@@ -23,7 +23,8 @@ module.exports = {
      * @private
      *
      */
-    prng: function(len=16) {
+    prng: function(len) {
+        if(len === undefined) len=16
 
         var entropy = crypto.randomBytes(len)
         var result = 0
@@ -34,9 +35,10 @@ module.exports = {
         return result
     },
 
-    runif: function(n, min=0, max=1) {
-        // TODO: Validate non-number
-        // TODO: Validate max > min
+    runif: function(n, min, max) {
+        if(min === undefined) min=0
+        if(max === undefined) max=1
+
         var toReturn = []
 
         for(var i=0; i<n; i++) {
@@ -48,7 +50,9 @@ module.exports = {
     },
 
     // Adapted from http://blog.yjl.im/2010/09/simulating-normal-random-variable-using.html
-    rnorm: function(n, mean=0, sd=1) {
+    rnorm: function(n, mean, sd) {
+        if(mean === undefined) mean=0
+        if(sd === undefined) sd=1
 
         var toReturn = []
 
@@ -76,7 +80,9 @@ module.exports = {
      * @param number The number of random variates to create. Must be a positive integer
      * @param rate The rate parameter. Must be a positive number
      */
-    rexp: function(n, rate=1) {
+    rexp: function(n, rate) {
+        if(rate === undefined) rate=1
+
         var toReturn = []
 
         for(var i=0; i<n; i++) {
@@ -87,6 +93,8 @@ module.exports = {
         return toReturn
     },
 
+    /*
+    // TODO: fix, bad for large lambda
     // Adapted from http://wiki.q-researchsoftware.com/wiki/How_to_Generate_Random_Numbers:_Poisson_Distribution
     rpois: function(n, lambda) {
         var toReturn = []
@@ -104,8 +112,11 @@ module.exports = {
 
         return toReturn
     },
+    */
 
-    rchisq: function(n, df, ncp=0) {
+    rchisq: function(n, df, ncp) {
+        if(ncp === undefined) ncp=0
+
         var toReturn = []
         for(var i=0; i<n; i++) {
             // Start at ncp
@@ -118,7 +129,11 @@ module.exports = {
         return toReturn
     },
 
-    rcauchy: function(n, loc=0, scale=1) {
+    rcauchy: function(n, loc, scale) {
+        if(loc === undefined) loc=0
+        if(scale === undefined) scale=1
+
+
         var toReturn = []
         for(var i=0; i<n; i++) {
             var x = scale * Math.tan(Math.PI * (this.prng()-0.5))+loc
@@ -147,7 +162,12 @@ module.exports = {
         return toReturn
     },
 
-    rfml: function (n, loc=1, p=this.prng, cap=10000, trace={}) {
+    rfml: function (n, loc, p, cap, trace) {
+        if(loc === undefined) loc=1
+        if(p === undefined) p=this.prng
+        if(cap === undefined) cap=10000
+        if(trace === undefined) trace={}
+
         // if(p === undefined) p=this.prng
 
         var toReturn = []
@@ -176,6 +196,7 @@ module.exports = {
     }
 };
 
+// TODO: Validate parameter values
 // NOTES
 // Want to include diehard tests or similar
 // Potential config options:

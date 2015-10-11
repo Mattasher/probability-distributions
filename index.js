@@ -4,7 +4,7 @@
  * first created at : Sat Oct 10 2015
  *
  * ================================================================
- * Copyright 2014 Matt Asher
+ * Copyright 2015 Matt Asher
  *
  * Licensed under the MIT License
  * You may not use this file except in compliance with the License.
@@ -174,7 +174,6 @@ module.exports = {
         }
         return toReturn
     }
-
 };
 
 // NOTES
@@ -183,4 +182,4 @@ module.exports = {
 // default entropy amount
 // Not yet ready for secure applications
 // Always return a vector unless number is 1. This could be config option
-// Better off with currying to separate out core random variate creation from number to create loop
+// Separate out core random variate creation from number to create loop

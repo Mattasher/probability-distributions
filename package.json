@@ -1,0 +1,22 @@
+{
+  "name": "probability-distributions",
+  "version": "0.1.0",
+  "description": "Generate random variables from a variety of distributions with a syntax similar to R",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "probability",
+    "distributions",
+    "random",
+    "number",
+    "generator",
+    "prng"
+  ],
+  "author": "Matt Asher",
+  "license": "MIT",
+  "dependencies": {
+    "crypto": "0.0.3"
+  }
+}

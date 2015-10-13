@@ -11,7 +11,7 @@
  *
  * ================================================================ */
 
-var crypto = require('crypto')
+var crypto = require('crypto');
 
 module.exports = {
 
@@ -24,10 +24,10 @@ module.exports = {
      *
      */
     prng: function(len) {
-        if(len === undefined) len=16
+        if(len === undefined) len=16;
 
-        var entropy = crypto.randomBytes(len)
-        var result = 0
+        var entropy = crypto.randomBytes(len);
+        var result = 0;
 
         for(var i=0; i<len; i++) {
             result = result + Number(entropy[i])/Math.pow(256,(i+1))
@@ -36,14 +36,14 @@ module.exports = {
     },
 
     runif: function(n, min, max) {
-        if(min === undefined) min=0
-        if(max === undefined) max=1
+        if(min === undefined) min=0;
+        if(max === undefined) max=1;
 
-        var toReturn = []
+        var toReturn = [];
 
         for(var i=0; i<n; i++) {
-            var raw = this.prng()
-            var scaled = min + raw*(max-min)
+            var raw = this.prng();
+            var scaled = min + raw*(max-min);
             toReturn.push(scaled)
         }
         return toReturn
@@ -51,13 +51,13 @@ module.exports = {
 
     // Adapted from http://blog.yjl.im/2010/09/simulating-normal-random-variable-using.html
     rnorm: function(n, mean, sd) {
-        if(mean === undefined) mean=0
-        if(sd === undefined) sd=1
+        if(mean === undefined) mean=0;
+        if(sd === undefined) sd=1;
 
-        var toReturn = []
+        var toReturn = [];
 
         for(var i=0; i<n; i++) {
-            var V1, V2, S, X
+            var V1, V2, S, X;
 
             do {
                 var U1 = this.prng();
@@ -69,7 +69,7 @@ module.exports = {
 
             X = Math.sqrt(-2 * Math.log(S) / S) * V1;
             X = mean + sd * X;
-            toReturn.push(X)
+            toReturn.push(X);
         }
 
         return toReturn
@@ -77,17 +77,17 @@ module.exports = {
 
     /**
      *
-     * @param number The number of random variates to create. Must be a positive integer
+     * @param n The number of random variates to create. Must be a positive integer
      * @param rate The rate parameter. Must be a positive number
      */
     rexp: function(n, rate) {
-        if(rate === undefined) rate=1
+        if(rate === undefined) rate=1;
 
-        var toReturn = []
+        var toReturn = [];
 
         for(var i=0; i<n; i++) {
-            var x = -Math.log(this.prng())/rate
-            toReturn.push(x)
+            var x = -Math.log(this.prng())/rate;
+            toReturn.push(x);
         }
 
         return toReturn
@@ -97,8 +97,8 @@ module.exports = {
     rpois: function(n, lambda) {
         var toReturn = []
 
-        // if(lambda < 10) {
-            for(var i=0; i<n; i++) {
+        for(var i=0; i<n; i++) {
+            if (lambda < 30) {
 
                 var L = Math.exp(-lambda);
                 var p = 1;
@@ -108,59 +108,60 @@ module.exports = {
                     p *= this.prng();
                 } while (p > L);
                 toReturn.push(k - 1);
-            }
-        /*
-        } else {
 
-            var k, U, V, slam, loglam, a, b, invalpha, vr, us;
+            } else {
 
-                slam = Math.sqrt(lamda);
-                loglam = Math.log(lamda);
-                b = 0.931 + 2.53*slam;
-                a = -0.059 + 0.02483*b;
-                invalpha = 1.1239 + 1.1328/(b-3.4);
-                vr = 0.9277 - 3.6224/(b-2);
+                /*
+                 // www.johndcook.com/blog/2010/06/14/generating-poisson-random-values/ for large
+                 // This murders CPU for very large lambda!
+                var c = 0.767 - 3.36 / lambda;
+                var beta = Math.PI / Math.sqrt(3 * lambda);
+                var alpha = beta * lambda;
+                var k = Math.log(c) - lambda - Math.log(beta);
+                var lhs = 1, rhs = 0;
 
-                while (true)
-                {
-                    U = rk_double(state) - 0.5;
-                    V = rk_double(state);
-                    us = 0.5 - fabs(U);
-                    k = Math.floor((2*a/us + b)*U + lamda + 0.43);
-                    if ((us >= 0.07) && (V <= vr))
-                    {
-                        return k;
+                do {
+                    var u = this.prng();
+                    var x = (alpha - Math.log((1 - u) / u)) / beta;
+                    var s = Math.floor(x + 0.5);
+                    if (s < 0) continue;
+
+                    var v = this.prng();
+                    var y = alpha - beta * x;
+                    var temp = 1.0 + Math.exp(y);
+                    lhs = y + Math.log(v / (temp * temp));
+                    rhs = k + s * Math.log(lambda) - Math.log(this._factorial(s));
+                } while (lhs > rhs);
+                toReturn[i] = s
+                */
+
+
+                // Roll our own
+                // Fix total number of samples
+                var samples = 10000;
+                var p = lambda/samples;
+                var k = 0;
+                for(var j=0; j<samples; j++) {
+                    if(this.prng() < p) {
+                        k++
                     }
-                    if ((k < 0) ||
-                        ((us < 0.013) && (V > us)))
-                    {
-                        continue;
-                    }
-                    if ((Math.log(V) + Math.log(invalpha) - Math.log(a/(us*us)+b)) <=
-                        (-lam + k*loglam - loggam(k+1)))
-                    {
-                        return k;
-                    }
-
-
                 }
+                toReturn[i] = k;
 
             }
-         }
-         */
-
+        }
 
         return toReturn
     },
 
 
     rchisq: function(n, df, ncp) {
-        if(ncp === undefined) ncp=0
+        if(ncp === undefined) ncp=0;
 
-        var toReturn = []
+        var toReturn = [];
         for(var i=0; i<n; i++) {
             // Start at ncp
-            var x = ncp
+            var x = ncp;
             for(var j=0; j<df; j++) {
                 x = x + Math.pow(this.rnorm(1)[0],2)
             }
@@ -170,13 +171,13 @@ module.exports = {
     },
 
     rcauchy: function(n, loc, scale) {
-        if(loc === undefined) loc=0
-        if(scale === undefined) scale=1
+        if(loc === undefined) loc=0;
+        if(scale === undefined) scale=1;
 
 
-        var toReturn = []
+        var toReturn = [];
         for(var i=0; i<n; i++) {
-            var x = scale * Math.tan(Math.PI * (this.prng()-0.5))+loc
+            var x = scale * Math.tan(Math.PI * (this.prng()-0.5))+loc;
 
             toReturn[i] = x
         }
@@ -193,7 +194,7 @@ module.exports = {
      * @returns {Array}
      */
     ruf: function(n) {
-        var toReturn = []
+        var toReturn = [];
 
         for(var i=0; i<n; i++) {
             toReturn[i] = this.rexp(1, this.prng())[0]
@@ -203,36 +204,44 @@ module.exports = {
     },
 
     rfml: function (n, loc, p, cap, trace) {
-        if(loc === undefined) loc=1
-        if(p === undefined) p=this.prng
-        if(cap === undefined) cap=10000
-        if(trace === undefined) trace={}
+        if(loc === undefined) loc=1;
+        if(p === undefined) p=this.prng;
+        if(cap === undefined) cap=10000;
+        if(trace === undefined) trace={};
 
         // if(p === undefined) p=this.prng
 
-        var toReturn = []
+        var toReturn = [];
 
         for(var i=0; i<n; i++) {
-            var x = 0
-            var s = loc
-            var currP = p()
+            var x = 0;
+            var s = loc;
+            var currP = p();
             do {
 
-                var trial = this.prng()
+                var trial = this.prng();
                 if(trial < currP) {
-                    s++
+                    s++;
                     trace[String(i) + "_" + String(x)] = { problems: s, p: currP, result: "One more problem" }
                 } else {
-                    s--
+                    s--;
                     trace[String(i) + "_" + String(x)] = { problems: s, p: currP, result: "One fewer problem" }
                 }
                 x++
-            } while(s > 0 && x < cap)
+            } while(s > 0 && x < cap);
 
-            if(x === cap) x = -1 // Indicate we failed to do it in time.
+            if(x === cap) x = -1; // Indicate we failed to do it in time.
             toReturn[i] = x
         }
         return toReturn
+    },
+
+    _factorial: function(n) {
+        var toReturn=1;
+        for (var i = 2; i <= n; i++)
+            toReturn = toReturn * i;
+
+        return toReturn;
     }
 };
 

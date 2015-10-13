@@ -1,6 +1,6 @@
-#Probability Distributions Library for JavaScript
+# Probability Distributions Library for JavaScript
 
-##Installation
+## Installation
 
 `npm install --save probability-distributions`
 
@@ -9,6 +9,25 @@
 
 For documentation and examples, visit http://statisticsblog.com/probability-distributions/
 
+## Currently supported
 
-##License
+- Uniform distribution (with entropy option for standard uniform)
+
+- Normal (Gaussian) distribution
+
+- Exponential distribution
+
+- Poisson distribution (not recommended for lambda > 100)
+
+- Chi-Squared distribution
+
+- Cauchy distribution
+
+## Warning
+
+This package contains addition distributions marked as "experimental". Use these with extreme caution.
+
+
+## License
+
 MIT

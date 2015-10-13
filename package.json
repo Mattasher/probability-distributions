@@ -8,10 +8,16 @@
   },
   "keywords": [
     "probability",
-    "distributions",
+    "probability distributions",
     "random",
-    "number",
+    "random numbers",
+    "random variates",
     "generator",
+    "Pseudorandom number generator",
+    "Rstats",
+    "Rlang",
+    "R-stats",
+    "R-language",
     "prng"
   ],
   "author": "Matt Asher",

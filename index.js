@@ -93,26 +93,66 @@ module.exports = {
         return toReturn
     },
 
-    /*
-    // TODO: fix, bad for large lambda
     // Adapted from http://wiki.q-researchsoftware.com/wiki/How_to_Generate_Random_Numbers:_Poisson_Distribution
     rpois: function(n, lambda) {
         var toReturn = []
 
-        for(var i=0; i<n; i++) {
-            var L = Math.exp(-lambda);
-            var p = 1.0;
-            var k = 0;
-            do {
-                k++;
-                p *= this.prng();
-            } while (p > L);
-            toReturn.push(k - 1);
-        }
+        // if(lambda < 10) {
+            for(var i=0; i<n; i++) {
+
+                var L = Math.exp(-lambda);
+                var p = 1;
+                var k = 0;
+                do {
+                    k++;
+                    p *= this.prng();
+                } while (p > L);
+                toReturn.push(k - 1);
+            }
+        /*
+        } else {
+
+            var k, U, V, slam, loglam, a, b, invalpha, vr, us;
+
+                slam = Math.sqrt(lamda);
+                loglam = Math.log(lamda);
+                b = 0.931 + 2.53*slam;
+                a = -0.059 + 0.02483*b;
+                invalpha = 1.1239 + 1.1328/(b-3.4);
+                vr = 0.9277 - 3.6224/(b-2);
+
+                while (true)
+                {
+                    U = rk_double(state) - 0.5;
+                    V = rk_double(state);
+                    us = 0.5 - fabs(U);
+                    k = Math.floor((2*a/us + b)*U + lamda + 0.43);
+                    if ((us >= 0.07) && (V <= vr))
+                    {
+                        return k;
+                    }
+                    if ((k < 0) ||
+                        ((us < 0.013) && (V > us)))
+                    {
+                        continue;
+                    }
+                    if ((Math.log(V) + Math.log(invalpha) - Math.log(a/(us*us)+b)) <=
+                        (-lam + k*loglam - loggam(k+1)))
+                    {
+                        return k;
+                    }
+
+
+                }
+
+            }
+         }
+         */
+
 
         return toReturn
     },
-    */
+
 
     rchisq: function(n, df, ncp) {
         if(ncp === undefined) ncp=0

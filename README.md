@@ -25,7 +25,7 @@ For documentation and examples, visit http://statisticsblog.com/probability-dist
 
 ## Warning
 
-This package contains addition distributions marked as "experimental". Use these with extreme caution.
+This package contains additional distributions marked as "experimental". Use these with extreme caution.
 
 
 ## License

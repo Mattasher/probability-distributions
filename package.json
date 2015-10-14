@@ -1,6 +1,6 @@
 {
   "name": "probability-distributions",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "Generate random variables from a variety of distributions with a syntax similar to R",
   "main": "index.js",
   "scripts": {
@@ -32,6 +32,5 @@
   "devDependencies": {
     "chai": "^3.3.0",
     "mocha": "^2.3.3"
-
   }
 }

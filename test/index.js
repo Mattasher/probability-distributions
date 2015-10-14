@@ -30,8 +30,25 @@ describe("Test of entropy generation", function() {
             expect(item).to.be.below(60);
         })
     });
+});
 
+describe("Test of binomial distribution", function() {
+    it('Generates whole numbers between 0 and max', function() {
+        var rn = PD.rbinom(repeat, 6, 0.6)
+        rn.map(function(item) {
+            expect(item).to.equal(Math.round(item));
+            expect(item).to.be.above(-1);
+            expect(item).to.be.below(7);
+        })
 
+        // Try without optional parameters
+        var rn = PD.rbinom(repeat)
+        rn.map(function(item) {
+            expect(item).to.equal(Math.round(item));
+            expect(item).to.be.above(-1);
+            expect(item).to.be.below(2);
+        })
+    });
 });
 
 

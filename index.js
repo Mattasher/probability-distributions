@@ -35,6 +35,32 @@ module.exports = {
         return result
     },
 
+    /**
+     *
+     * @param n Number of variates to return
+     * @param size Number of Bernoulli trials to be summed up. Defaults to 1
+     * @param p Probability of a "success". Defaults to 0.5
+     * @returns {Array} Random variates
+     */
+    rbinom: function(n, size, p) {
+        if(n === undefined) n=1;
+        if(size === undefined) size=1;
+        if(p === undefined) p=0.5;
+
+        var toReturn = [];
+
+        for(var i=0; i<n; i++) {
+            var result = 0;
+            for(var j=0; j<size; j++) {
+                if(this.prng() < p) {
+                    result++
+                }
+            }
+            toReturn.push(result)
+        }
+        return toReturn
+    },
+
     runif: function(n, min, max) {
         if(min === undefined) min=0;
         if(max === undefined) max=1;

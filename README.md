@@ -13,6 +13,8 @@ For documentation and examples, visit http://statisticsblog.com/probability-dist
 
 - Uniform distribution (with entropy option for standard uniform)
 
+- Binomial distribution
+
 - Normal (Gaussian) distribution
 
 - Exponential distribution

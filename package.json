@@ -4,7 +4,7 @@
   "description": "Generate random variables from a variety of distributions with a syntax similar to R",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha"
   },
   "keywords": [
     "probability",
@@ -28,5 +28,10 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/Mattasher/probability-distributions"
+  },
+  "devDependencies": {
+    "chai": "^3.3.0",
+    "mocha": "^2.3.3"
+
   }
 }

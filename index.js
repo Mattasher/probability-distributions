@@ -111,31 +111,6 @@ module.exports = {
 
             } else {
 
-                /*
-                 // www.johndcook.com/blog/2010/06/14/generating-poisson-random-values/ for large
-                 // This murders CPU for very large lambda!
-                var c = 0.767 - 3.36 / lambda;
-                var beta = Math.PI / Math.sqrt(3 * lambda);
-                var alpha = beta * lambda;
-                var k = Math.log(c) - lambda - Math.log(beta);
-                var lhs = 1, rhs = 0;
-
-                do {
-                    var u = this.prng();
-                    var x = (alpha - Math.log((1 - u) / u)) / beta;
-                    var s = Math.floor(x + 0.5);
-                    if (s < 0) continue;
-
-                    var v = this.prng();
-                    var y = alpha - beta * x;
-                    var temp = 1.0 + Math.exp(y);
-                    lhs = y + Math.log(v / (temp * temp));
-                    rhs = k + s * Math.log(lambda) - Math.log(this._factorial(s));
-                } while (lhs > rhs);
-                toReturn[i] = s
-                */
-
-
                 // Roll our own
                 // Fix total number of samples
                 var samples = 10000;
@@ -147,7 +122,6 @@ module.exports = {
                     }
                 }
                 toReturn[i] = k;
-
             }
         }
 
@@ -209,8 +183,6 @@ module.exports = {
         if(cap === undefined) cap=10000;
         if(trace === undefined) trace={};
 
-        // if(p === undefined) p=this.prng
-
         var toReturn = [];
 
         for(var i=0; i<n; i++) {
@@ -246,10 +218,10 @@ module.exports = {
 };
 
 // TODO: Validate parameter values
+// TODO: Add "perfect fake" functions: http://www.statisticsblog.com/2010/06/the-perfect-fake/
 // NOTES
-// Want to include diehard tests or similar
 // Potential config options:
 // default entropy amount
-// Not yet ready for secure applications
-// Always return a vector unless number is 1. This could be config option
+// Need pathway to make ready for secure applications (NIST/diehard?)
+// Always return a vector unless number is 1? This could be config option
 // Separate out core random variate creation from number to create loop

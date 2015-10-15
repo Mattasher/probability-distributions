@@ -51,5 +51,26 @@ describe("Test of binomial distribution", function() {
     });
 });
 
+describe("Test of binomial distribution", function() {
+    it('Generates whole numbers', function() {
+        var rn = PD.rnbinom(repeat, 6, 0.7)
+        rn.map(function(item) {
+            expect(item).to.equal(Math.round(item));
+            expect(item).to.be.above(-1);
+        })
+
+    });
+
+    // Test to make sure throwing properly
+    it('Throws errors on bad parameters', function() {
+        expect(function() { PD.rnbinom(1, 2.3 ,0.5) }).to.throw("Size must be a whole number")
+        expect(function() { PD.rnbinom(1, 0, -1) } ).to.throw("Size must one or greater")
+        expect(function() { PD.rnbinom(1, 3, 0.5, 3) }).to.throw("You must specify probability or mean, not both")
+        expect(function() { PD.rnbinom(1, 6, -1) }).to.throw("Probability cannot be negative")
+        expect(function() { PD.rnbinom(1, 6, 1.1) }).to.throw("Probability cannot be greater than 1")
+
+    });
+});
+
 
 // TODO: Implement full diehard and/or NIST testing

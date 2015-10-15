@@ -1,5 +1,6 @@
 /* ================================================================
  * probability-distributions by Matt Asher (me[at]mattasher.com)
+ * Originally created for StatisticsBlog.com
  *
  * first created at : Sat Oct 10 2015
  *
@@ -40,7 +41,7 @@ module.exports = {
      * @param n Number of variates to return
      * @param size Number of Bernoulli trials to be summed up. Defaults to 1
      * @param p Probability of a "success". Defaults to 0.5
-     * @returns {Array} Random variates
+     * @returns {Array} Random variates array
      */
     rbinom: function(n, size, p) {
         if(n === undefined) n=1;
@@ -61,6 +62,13 @@ module.exports = {
         return toReturn
     },
 
+    /**
+     *
+     * @param n  Number of variates to return
+     * @param min Lower bound
+     * @param max Upper bound
+     * @returns {Array} Random variates array
+     */
     runif: function(n, min, max) {
         if(min === undefined) min=0;
         if(max === undefined) max=1;
@@ -73,6 +81,36 @@ module.exports = {
             toReturn.push(scaled)
         }
         return toReturn
+    },
+
+    rnbinom: function(n, size, p, mu) {
+
+        // Validations and defaults
+        if(size === undefined) size=1;
+        if(Math.round(size) != size) throw "Size must be a whole number";
+        if(size < 1) throw "Size must one or greater";
+        if(p !== undefined && mu !== undefined) throw "You must specify probability or mean, not both";
+        if(mu !== undefined) p = size/(size+mu);
+        if(p <= 0) throw "Probability cannot be negative";
+        if(p > 1) throw "Probability cannot be greater than 1";
+
+        var toReturn = [];
+
+        for(var i=0; i<n; i++) {
+
+            // Core distribution
+            var result = 0;
+            var leftToFind = size;
+            while(leftToFind > 0) {
+                result++
+                if(this.prng() < p) leftToFind--;
+            }
+
+            toReturn[i] = result - 1;
+        }
+
+        return toReturn
+
     },
 
     // Adapted from http://blog.yjl.im/2010/09/simulating-normal-random-variable-using.html

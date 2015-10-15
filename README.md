@@ -7,7 +7,10 @@
 
 `var PD = require("probability-distributions");`
 
-For documentation and examples, visit http://statisticsblog.com/probability-distributions/
+**For documentation and examples, visit:**
+
+- http://statisticsblog.com/probability-distributions/
+
 
 ## Currently supported
 

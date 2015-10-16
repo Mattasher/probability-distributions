@@ -7,9 +7,7 @@
 
 `var PD = require("probability-distributions");`
 
-**For documentation and examples, visit:**
-
-- http://statisticsblog.com/probability-distributions/
+**For documentation and examples, visit: <a href="http://statisticsblog.com/probability-distributions/">http://statisticsblog.com/probability-distributions/</a>
 
 
 ## Currently supported
@@ -17,6 +15,8 @@
 - Uniform distribution (with entropy option for standard uniform)
 
 - Binomial distribution
+
+- Negative Binomial distribution
 
 - Normal (Gaussian) distribution
 

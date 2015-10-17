@@ -1,9 +1,9 @@
 # Probability Distributions Library for JavaScript
+Functions for sampling random variables from probability distributions. Uses the same function names as R.
 
 ## Installation
 
 `npm install --save probability-distributions`
-
 
 `var PD = require("probability-distributions");`
 

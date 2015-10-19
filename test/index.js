@@ -73,5 +73,27 @@ describe("Test of negative binomial distribution", function() {
     });
 });
 
+describe("Test of sample function", function() {
 
+    // Test to make sure throwing properly
+    it('Throws errors on bad parameters', function() {
+        expect(function() { PD.sample() }).to.throw("Expected an array of length 1 or greater");
+        expect(function() { PD.sample([]) } ).to.throw("Expected an array of length 1 or greater");
+        expect(function() { PD.sample([1,2,3], 4) } ).to.throw("You cannot select 4 items from an array of length 3 without replacement");
+        expect(function() { PD.sample([1,2,3,4], 4, true, [1,1,-1,1]) } ).to.throw("Parameter cannot be less than 0");
+        expect(function() { PD.sample([1,2,3], 4, true, [1,1,1,1]) } ).to.throw("Probabilities for sample must be same length as the array to sample from");
+
+    });
+
+    it('Returns the correct sample', function() {
+        expect(PD.sample([3],1)[0]).to.equal(3);
+        expect(PD.sample([3],1)[1]).to.equal(undefined);
+
+        for(var i=0; i<repeat; i++) {
+            expect(PD.sample([1,2,3,4], 1, true, [0,0,0,0.3])[0]).to.equal(4);
+        }
+    })
+});
+
+// TODO: Unit test each of the _v functions by itself
 // TODO: Implement full diehard and/or NIST testing

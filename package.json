@@ -1,23 +1,27 @@
 {
   "name": "probability-distributions",
   "version": "0.3.2",
-  "description": "Generate random variables from a variety of probability distributions. Includes tools to shuffle an array or sample from it",
+  "description": "Generate random variables from a variety of probability distributions. Includes tools to shuffle an array or sample from it.",
   "main": "index.js",
   "scripts": {
     "test": "mocha"
   },
   "keywords": [
+    "statistical distributions",
+    "normal distribution",
+    "gamma distribution",
+    "poisson distribution",
+    "Chi-squared distribution",
     "probability",
     "probability distributions",
     "random",
     "random numbers",
     "random variates",
-    "generator",
+    "random variables",
     "Pseudorandom number generator",
     "Rstats",
     "Rlang",
     "R-stats",
-    "R-language",
     "prng"
   ],
   "author": "Matt Asher",

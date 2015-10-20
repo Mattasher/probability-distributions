@@ -21,7 +21,6 @@ module.exports = {
      *
      * @param len number of bytes of entropy to create
      * @returns {number} A pseduo random number between 0 and 1
-     * @private
      *
      */
     prng: function(len) {
@@ -38,7 +37,41 @@ module.exports = {
 
     /**
      *
-     * @param n Number of variates to return
+     * @param n The number of random variates to create. Must be a positive integer.
+     * @param alpha First shape parameter
+     * @param beta Second shape parameter
+     * @param loc Location or Non-centrality parameter
+     */
+    /*
+    // Testing...
+    rbeta: function(n, alpha, beta, loc) {
+        // Uses relationship with gamma to calculate
+
+        // Validations
+        n = this._v(n, "n");
+        alpha = this._v(alpha, "nn", 1);
+        beta = this._v(beta, "nn", 1);
+        loc =  this._v(loc, "r", 0);
+
+        console.log(alpha, beta, n, loc)
+
+        var toReturn = [];
+
+        for(var i=0; i<n; i++) {
+            var g1 = this.rgamma(1, alpha, 1)[0];
+            var g2 = this.rgamma(1, beta, 1)[0];
+
+
+            toReturn[i] = loc + g1/(g1+g2);
+        }
+        return toReturn
+
+    },
+    */
+
+    /**
+     *
+     * @param n Number of variates to return.
      * @param size Number of Bernoulli trials to be summed up. Defaults to 1
      * @param p Probability of a "success". Defaults to 0.5
      * @returns {Array} Random variates array
@@ -57,12 +90,19 @@ module.exports = {
                     result++
                 }
             }
-            toReturn.push(result)
+            toReturn[i] = result;
         }
         return toReturn
     },
 
 
+    /**
+     *
+     * @param n The number of variates to create
+     * @param loc Location parameter
+     * @param scale Scale parameter
+     * @returns {Array} Random variates array
+     */
     rcauchy: function(n, loc, scale) {
         n = this._v(n, "n");
         loc = this._v(loc, "r", 0);
@@ -72,7 +112,7 @@ module.exports = {
         for(var i=0; i<n; i++) {
             var x = scale * Math.tan(Math.PI * (this.prng()-0.5))+loc;
 
-            toReturn[i] = x
+            toReturn[i] = x;
         }
 
         return toReturn
@@ -96,7 +136,7 @@ module.exports = {
             // Start at ncp
             var x = ncp;
             for(var j=0; j<df; j++) {
-                x = x + Math.pow(this.rnorm(1)[0],2)
+                x = x + Math.pow(this.rnorm(1)[0],2);
             }
             toReturn[i] = x
         }
@@ -105,7 +145,7 @@ module.exports = {
 
     /**
      *
-     * @param n The number of random variates to create. Must be a positive integer
+     * @param n The number of random variates to create. Must be a positive integer.
      * @param rate The rate parameter. Must be a positive number
      */
     rexp: function(n, rate) {
@@ -115,13 +155,96 @@ module.exports = {
         var toReturn = [];
 
         for(var i=0; i<n; i++) {
-            var x = -Math.log(this.prng())/rate;
-            toReturn.push(x);
+
+            toReturn[i] =  -Math.log(this.prng())/rate;
         }
 
         return toReturn
     },
 
+    /**
+     *
+     * @param n The number of random variates to create. Must be a positive integer
+     * @param alpha
+     * @param rate
+     * @returns {Array} Random variates array
+     */
+    rgamma: function(n, alpha, rate) {
+        // Adapted from https://github.com/mvarshney/simjs-source/ & scipy
+
+        var LOG4 = Math.log(4.0);
+        var SG_MAGICCONST = 1.0 + Math.log(4.5);
+        var beta = 1/rate;
+
+        var toReturn = [];
+        for(var i = 0; i<n; i++) {
+
+            /* Based on Python 2.6 source code of random.py.
+             */
+
+            if (alpha > 1.0) {
+                var ainv = Math.sqrt(2.0 * alpha - 1.0);
+                var bbb = alpha - LOG4;
+                var ccc = alpha + ainv;
+
+                while (true) {
+                    var u1 = this.prng();
+                    if ((u1 < 1e-7) || (u > 0.9999999)) {
+                        continue;
+                    }
+                    var u2 = 1.0 - this.prng();
+                    var v = Math.log(u1 / (1.0 - u1)) / ainv;
+                    var x = alpha * Math.exp(v);
+                    var z = u1 * u1 * u2;
+                    var r = bbb + ccc * v - x;
+                    if ((r + SG_MAGICCONST - 4.5 * z >= 0.0) || (r >= Math.log(z))) {
+                        var result = x * beta;
+                        break;
+                    }
+                }
+            } else if (alpha == 1.0) {
+                var u = this.prng();
+                while (u <= 1e-7) {
+                    u = this.prng();
+                }
+                var result = - Math.log(u) * beta;
+            } else {
+                while (true) {
+                    var u = this.prng();
+                    var b = (Math.E + alpha) / Math.E;
+                    var p = b * u;
+                    if (p <= 1.0) {
+                        var x = Math.pow(p, 1.0 / alpha);
+                    } else {
+                        var x = - Math.log((b - p) / alpha);
+                    }
+                    var u1 = this.prng();
+                    if (p > 1.0) {
+                        if (u1 <= Math.pow(x, (alpha - 1.0))) {
+                            break;
+                        }
+                    } else if (u1 <= Math.exp(-x)) {
+                        break;
+                    }
+                }
+                var result =  x * beta;
+            }
+
+            toReturn[i] = result;
+        }
+
+        return toReturn;
+
+    },
+
+    /**
+     *
+     * @param n The number of random variates to create. Must be a positive integer.
+     * @param size Number of hits required
+     * @param p Hit probability
+     * @param mu Optional way to specify hit probability
+     * @returns {Array} Random variates array
+     */
     rnbinom: function(n, size, p, mu) {
         n = this._v(n, "n");
         if(size === undefined) size=1;
@@ -151,8 +274,16 @@ module.exports = {
 
     },
 
-    // Adapted from http://blog.yjl.im/2010/09/simulating-normal-random-variable-using.html
+    /**
+     *
+     * @param n The number of random variates to create. Must be a positive integer.
+     * @param mean Mean of the distribution
+     * @param sd Standard Deviation of the distribution
+     * @returns {Array} Random variates array
+     */
     rnorm: function(n, mean, sd) {
+        // Adapted from http://blog.yjl.im/2010/09/simulating-normal-random-variable-using.html
+
         n = this._v(n, "n");
         mean = this._v(mean, "r", 0);
         sd = this._v(sd, "nn", 1);
@@ -178,6 +309,12 @@ module.exports = {
         return toReturn
     },
 
+    /**
+     *
+     * @param n The number of random variates to create. Must be a positive integer.
+     * @param lambda Mean/Variance of the distribution
+     * @returns {Array} Random variates array
+     */
     rpois: function(n, lambda) {
         n = this._v(n, "n");
         lambda = this._v(lambda, "pos");

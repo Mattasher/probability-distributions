@@ -20,6 +20,8 @@ Functions for sampling random variables from probability distributions. Uses the
 
 - Exponential distribution
 
+- Gamma distribution
+
 - Negative Binomial distribution
 
 - Normal (Gaussian) distribution
@@ -30,7 +32,7 @@ Functions for sampling random variables from probability distributions. Uses the
 
 - Uniform distribution (with entropy option for standard uniform)
 
- 
+
 ## Warning
 
 This package contains additional distributions marked as "experimental". Use these with extreme caution.

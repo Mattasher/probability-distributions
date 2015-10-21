@@ -42,8 +42,6 @@ module.exports = {
      * @param beta Second shape parameter
      * @param loc Location or Non-centrality parameter
      */
-    /*
-    // Testing...
     rbeta: function(n, alpha, beta, loc) {
         // Uses relationship with gamma to calculate
 
@@ -67,7 +65,7 @@ module.exports = {
         return toReturn
 
     },
-    */
+
 
     /**
      *
@@ -171,6 +169,9 @@ module.exports = {
      */
     rgamma: function(n, alpha, rate) {
         // Adapted from https://github.com/mvarshney/simjs-source/ & scipy
+        n = this._v(n, "n");
+        alpha = this._v(alpha, "nn");
+        rate = this._v(rate, "pos", 1);
 
         var LOG4 = Math.log(4.0);
         var SG_MAGICCONST = 1.0 + Math.log(4.5);
@@ -234,6 +235,24 @@ module.exports = {
         }
 
         return toReturn;
+
+    },
+
+    // Syntax as in R library VGAM
+    rlaplace: function(n, loc, scale) {
+        n = this._v(n, "n");
+        loc = this._v(loc, "r", 0);
+        scale = this._v(scale, "nn", 1);
+
+        var toReturn = [];
+
+        for(var i=0; i<n; i++) {
+            var x = loc - scale * this.sample([-1,1])[0] * Math.log(1 - 2*Math.abs(this.prng()));
+
+            toReturn[i] = x;
+        }
+
+        return toReturn
 
     },
 
@@ -561,6 +580,7 @@ module.exports = {
      * random variate from U(0,1).
      */
     rfml: function (n, loc, p, cap, trace) {
+        n = this._v(n, "n");
         if(loc === undefined) loc=1;
         if(p === undefined) p=this.prng;
         if(cap === undefined) cap=10000;
@@ -599,6 +619,8 @@ module.exports = {
      * @returns {Array} Random variates array
      */
     ruf: function(n) {
+        n = this._v(n, "n");
+
         var toReturn = [];
 
         for(var i=0; i<n; i++) {

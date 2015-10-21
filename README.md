@@ -14,6 +14,8 @@ Functions for sampling random variables from probability distributions. Uses the
 
 - Binomial distribution
 
+- Beta distribution
+
 - Cauchy distribution
 
 - Chi-Squared distribution

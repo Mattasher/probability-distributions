@@ -24,6 +24,8 @@ Functions for sampling random variables from probability distributions. Uses the
 
 - Gamma distribution
 
+- Laplace distribution
+
 - Negative Binomial distribution
 
 - Normal (Gaussian) distribution

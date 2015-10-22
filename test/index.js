@@ -95,5 +95,72 @@ describe("Test of sample function", function() {
     })
 });
 
-// TODO: Unit test each of the _v functions by itself
-// TODO: Implement full diehard and/or NIST testing
+
+describe("Test validation functions", function() {
+
+    // Test to make sure throwing properly
+    it('Throws errors on bad parameters', function() {
+
+        // "a"
+        expect(function() { PD._v(undefined, "a") }).to.throw("Expected an array of length 1 or greater");
+        expect(function() { PD._v([], "a") }).to.throw("Expected an array of length 1 or greater");
+        expect(function() { PD._v("fox", "a") }).to.throw("Expected an array of length 1 or greater");
+
+        // "n"
+        expect(function() { PD._v(undefined, "n") }).to.throw("You must specify how many values you want");
+        expect(function() { PD._v("cheese", "n") }).to.throw("The number of values must be numeric");
+        expect(function() { PD._v("7", "n") }).to.throw("The number of values must be numeric");
+        expect(function() { PD._v(2.2, "n") }).to.throw("The number of values must be a whole number");
+        expect(function() { PD._v(-1, "n") }).to.throw("The number of values must be a whole number of 1 or greater");
+        expect(function() { PD._v(1/0, "n") }).to.throw("The number of values cannot be infinite ;-)");
+
+        // "p"
+        expect(function() { PD._v("george", "p") }).to.throw("Probability value is missing or not a number");
+        expect(function() { PD._v(undefined, "p") }).to.throw("Probability value is missing or not a number");
+        expect(function() { PD._v(-0.1, "p") }).to.throw("Probability values cannot be less than 0");
+        expect(function() { PD._v(1/0, "p") }).to.throw("Probability values cannot be greater than 1");
+
+        // "pos"
+        expect(function() { PD._v(undefined, "pos") }).to.throw("A required parameter is missing or not a number");
+        expect(function() { PD._v(-0.1, "pos") }).to.throw("Parameter must be greater than 0");
+        expect(function() { PD._v(-10e6, "pos") }).to.throw("Parameter must be greater than 0");
+        expect(function() { PD._v(0, "pos") }).to.throw("Parameter must be greater than 0");
+        expect(function() { PD._v(1/0, "pos") }).to.throw('Sent "infinity" as a parameter');
+
+        // "r"
+        expect(function() { PD._v(undefined, "r") }).to.throw("A required parameter is missing or not a number");
+        expect(function() { PD._v(1/0, "r") }).to.throw('Sent "infinity" as a parameter');
+
+        // "nn"
+        expect(function() { PD._v(undefined, "nn") }).to.throw("A required parameter is missing or not a number");
+        expect(function() { PD._v(-0.2, "nn") }).to.throw("Parameter cannot be less than 0");
+        expect(function() { PD._v(1/0, "nn") }).to.throw('Sent "infinity" as a parameter');
+
+        // "nni"
+        expect(function() { PD._v(undefined, "nni") }).to.throw("A required parameter is missing or not a number");
+        expect(function() { PD._v(23.4, "nni") }).to.throw("Parameter must be a whole number");
+        expect(function() { PD._v(-0.2, "nni") }).to.throw("Parameter must be a whole number");
+        expect(function() { PD._v(1/0, "nni") }).to.throw('Sent "infinity" as a parameter');
+
+    });
+
+    it('Returns the parameter back if correct', function() {
+        expect(PD._v(7, "n")).to.equal(7);
+        expect(PD._v(undefined, "n", 5)).to.equal(5);
+        expect(PD._v(undefined, "p", 0)).to.equal(0);
+        expect(PD._v(undefined, "p", 1)).to.equal(1);
+        expect(PD._v(0, "p")).to.equal(0);
+        expect(PD._v(1, "p")).to.equal(1);
+        expect(PD._v(.1, "p")).to.equal(.1);
+        expect(PD._v(.1, "pos")).to.equal(.1);
+        expect(PD._v(10, "pos")).to.equal(10);
+        expect(PD._v(10e6, "pos")).to.equal(10e6);
+        expect(PD._v(2.33333, "r")).to.equal(2.33333);
+        expect(PD._v(-2.7, "r")).to.equal(-2.7);
+        expect(PD._v(2, "nn")).to.equal(2);
+        expect(PD._v(10e3, "nni")).to.equal(10000);
+
+    })
+});
+
+// TODO: Implement NIST testing or similar

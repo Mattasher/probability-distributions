@@ -14,6 +14,10 @@
 
 var crypto = require('crypto');
 
+// Shortcuts
+var exp = Math.exp;
+var ln = Math.log;
+
 module.exports = {
 
     /**
@@ -50,8 +54,6 @@ module.exports = {
         alpha = this._v(alpha, "nn", 1);
         beta = this._v(beta, "nn", 1);
         loc =  this._v(loc, "r", 0);
-
-        console.log(alpha, beta, n, loc)
 
         var toReturn = [];
 
@@ -154,7 +156,7 @@ module.exports = {
 
         for(var i=0; i<n; i++) {
 
-            toReturn[i] =  -Math.log(this.prng())/rate;
+            toReturn[i] =  -ln(this.prng())/rate;
         }
 
         return toReturn
@@ -173,8 +175,8 @@ module.exports = {
         alpha = this._v(alpha, "nn");
         rate = this._v(rate, "pos", 1);
 
-        var LOG4 = Math.log(4.0);
-        var SG_MAGICCONST = 1.0 + Math.log(4.5);
+        var LOG4 = ln(4.0);
+        var SG_MAGICCONST = 1.0 + ln(4.5);
         var beta = 1/rate;
 
         var toReturn = [];
@@ -194,11 +196,11 @@ module.exports = {
                         continue;
                     }
                     var u2 = 1.0 - this.prng();
-                    var v = Math.log(u1 / (1.0 - u1)) / ainv;
-                    var x = alpha * Math.exp(v);
+                    var v = ln(u1 / (1.0 - u1)) / ainv;
+                    var x = alpha * exp(v);
                     var z = u1 * u1 * u2;
                     var r = bbb + ccc * v - x;
-                    if ((r + SG_MAGICCONST - 4.5 * z >= 0.0) || (r >= Math.log(z))) {
+                    if ((r + SG_MAGICCONST - 4.5 * z >= 0.0) || (r >= ln(z))) {
                         var result = x * beta;
                         break;
                     }
@@ -208,7 +210,7 @@ module.exports = {
                 while (u <= 1e-7) {
                     u = this.prng();
                 }
-                var result = - Math.log(u) * beta;
+                var result = - ln(u) * beta;
             } else {
                 while (true) {
                     var u = this.prng();
@@ -217,14 +219,14 @@ module.exports = {
                     if (p <= 1.0) {
                         var x = Math.pow(p, 1.0 / alpha);
                     } else {
-                        var x = - Math.log((b - p) / alpha);
+                        var x = - ln((b - p) / alpha);
                     }
                     var u1 = this.prng();
                     if (p > 1.0) {
                         if (u1 <= Math.pow(x, (alpha - 1.0))) {
                             break;
                         }
-                    } else if (u1 <= Math.exp(-x)) {
+                    } else if (u1 <= exp(-x)) {
                         break;
                     }
                 }
@@ -239,6 +241,13 @@ module.exports = {
     },
 
     // Syntax as in R library VGAM
+    /**
+     *
+     * @param n The number of random variates to create. Must be a positive integer
+     * @param loc Mean
+     * @param scale Scale parameter
+     * @returns {Array} Random variates array
+     */
     rlaplace: function(n, loc, scale) {
         n = this._v(n, "n");
         loc = this._v(loc, "r", 0);
@@ -247,13 +256,31 @@ module.exports = {
         var toReturn = [];
 
         for(var i=0; i<n; i++) {
-            var x = loc - scale * this.sample([-1,1])[0] * Math.log(1 - 2*Math.abs(this.prng()));
+            var core = this.sample([-1,1])[0] * ln(this.prng());
+
+            var x = loc - scale * core;
 
             toReturn[i] = x;
         }
 
         return toReturn
+    },
 
+
+    rlnorm: function(n, meanlog, sdlog) {
+        n = this._v(n, "n");
+        meanlog = this._v(meanlog, "r", 0);
+        sdlog = this._v(sdlog, "nn", 1);
+
+        var toReturn = [];
+
+        for(var i=0; i<n; i++) {
+            var x = this.rnorm(1, meanlog, sdlog)[0];
+
+            toReturn[i] = exp(x);
+        }
+
+        return toReturn
     },
 
     /**
@@ -320,7 +347,7 @@ module.exports = {
                 S = (V1 * V1) + (V2 * V2);
             } while (S > 1);
 
-            X = Math.sqrt(-2 * Math.log(S) / S) * V1;
+            X = Math.sqrt(-2 * ln(S) / S) * V1;
             X = mean + sd * X;
             toReturn.push(X);
         }
@@ -345,7 +372,7 @@ module.exports = {
             // Adapted from http://wiki.q-researchsoftware.com/wiki/How_to_Generate_Random_Numbers:_Poisson_Distribution
             if (lambda < 30) {
 
-                var L = Math.exp(-lambda);
+                var L = exp(-lambda);
                 var p = 1;
                 var k = 0;
                 do {
@@ -514,10 +541,10 @@ module.exports = {
 
             // Natural number
             case "n":
-                if(param === 0) throw "You must specify how many values you want";
-                if(param != Number(param)) throw "The number of values must be numeric";
-                if(param != Math.round(param)) throw "The number of values must be a whole number";
-                if(param < 0) throw "The number of values must be a whole number greater than 1";
+                if(param === undefined) throw "You must specify how many values you want";
+                if(param !== Number(param)) throw "The number of values must be numeric";
+                if(param !== Math.round(param)) throw "The number of values must be a whole number";
+                if(param < 1) throw "The number of values must be a whole number of 1 or greater";
                 if(param === Infinity) throw "The number of values cannot be infinite ;-)";
                 return param;
 
@@ -543,15 +570,15 @@ module.exports = {
 
             // Non negative real number
             case "nn":
-                if(param != Number(param)) throw "A required parameter is missing or not a number";
+                if(param !== Number(param)) throw "A required parameter is missing or not a number";
                 if(param < 0) throw "Parameter cannot be less than 0";
                 if(param === Infinity) throw 'Sent "infinity" as a parameter';
                 return param;
 
             // Non negative whole number (integer)
             case "nni":
-                if(param != Number(param)) throw "A required parameter is missing or not a number";
-                if(param != Math.round(param)) throw "Parameter must be a whole number";
+                if(param !== Number(param)) throw "A required parameter is missing or not a number";
+                if(param !== Math.round(param)) throw "Parameter must be a whole number";
                 if(param < 0) throw "Parameter cannot be less than zero";
                 if(param === Infinity) throw 'Sent "infinity" as a parameter';
                 return param;
@@ -631,7 +658,6 @@ module.exports = {
     }
 };
 
-// TODO: Validate all parameter values
 // TODO: Add "perfect fake" functions: http://www.statisticsblog.com/2010/06/the-perfect-fake/
 // NOTES
 // Potential config options:

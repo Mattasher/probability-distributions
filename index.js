@@ -116,7 +116,6 @@ module.exports = {
         }
 
         return toReturn
-
     },
 
     /**
@@ -267,6 +266,13 @@ module.exports = {
     },
 
 
+    /**
+     *
+     * @param n The number of random variates to create. Must be a positive integer.
+     * @param meanlog The mean log.
+     * @param sdlog Log SD. Must be greater than 0.
+     * @returns {Array} Random variates array
+     */
     rlnorm: function(n, meanlog, sdlog) {
         n = this._v(n, "n");
         meanlog = this._v(meanlog, "r", 0);

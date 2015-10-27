@@ -73,6 +73,22 @@ describe("Test of negative binomial distribution", function() {
     });
 });
 
+describe("Test of F-distribution", function() {
+    it('Generates non-negative numbers', function() {
+        var rn = PD.rf(repeat, 1, 1)
+        rn.map(function(item) {
+            expect(item).to.be.above(0);
+        })
+
+    });
+
+    // Test to make sure throwing properly
+    it('Throws errors on bad parameters', function() {
+        expect(function() { PD.rf(1, -1 ,3) }).to.throw("Parameter cannot be less than 0")
+        expect(function() { PD.rf(1, 1 ,-3) }).to.throw("Parameter cannot be less than 0")
+    });
+});
+
 describe("Test of sample function", function() {
 
     // Test to make sure throwing properly

@@ -137,7 +137,7 @@ module.exports = {
             for(var j=0; j<df; j++) {
                 x = x + Math.pow(this.rnorm(1)[0],2);
             }
-            toReturn[i] = x
+            toReturn[i] = x;
         }
         return toReturn
     },
@@ -160,6 +160,31 @@ module.exports = {
 
         return toReturn
     },
+
+    /**
+     *
+     * @param n The number of variates to create
+     * @param df1 Degrees of freedom for the first parameter
+     * @param df2 Degrees of freedom for the first parameter
+     * @returns {Array} Random variates array
+     */
+    rf: function(n, df1, df2) {
+        n = this._v(n, "n");
+        df1 = this._v(df1, "nn");
+        df2 = this._v(df2, "nn");
+
+        var toReturn = [];
+        for(var i=0; i<n; i++) {
+            var num = this.rchisq(1, df1)[0]/df1;
+            var denom = this.rchisq(1, df2)[0]/df2;
+
+            toReturn[i] = num/denom;
+        }
+
+        return toReturn
+
+    },
+
 
     /**
      *
@@ -315,7 +340,7 @@ module.exports = {
             var result = 0;
             var leftToFind = size;
             while(leftToFind > 0) {
-                result++
+                result++;
                 if(this.prng() < p) leftToFind--;
             }
 

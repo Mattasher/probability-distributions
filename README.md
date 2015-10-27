@@ -22,6 +22,8 @@ Functions for sampling random variables from probability distributions. Uses the
 
 - Exponential distribution
 
+- F distribution
+
 - Gamma distribution
 
 - Laplace distribution

@@ -505,6 +505,9 @@ module.exports = {
 
     },
 
+
+    // HELPERS
+
     /**
      *
      * @param ratios Array of non-negative numbers to be turned into CDF
@@ -546,16 +549,6 @@ module.exports = {
         return cur;
     },
 
-
-    // HELPER
-    _factorial: function(n) {
-        n = this._v(n, "n");
-        var toReturn=1;
-        for (var i = 2; i <= n; i++)
-            toReturn = toReturn * i;
-
-        return toReturn;
-    },
 
     // Return default if undefined, otherwise validate
     _v: function(param, type, def) {
@@ -617,6 +610,7 @@ module.exports = {
         }
     },
 
+
     //    ________   _______  ______ _____  _____ __  __ ______ _   _ _______       _
     //   |  ____\ \ / /  __ \|  ____|  __ \|_   _|  \/  |  ____| \ | |__   __|/\   | |
     //   | |__   \ V /| |__) | |__  | |__) | | | | \  / | |__  |  \| |  | |  /  \  | |
@@ -627,21 +621,21 @@ module.exports = {
     /**
      *
      * @param n Number of variates to return
-     * @param loc Starting point
+     * @param loc Starting point. Must be a non-negative integer. 0 for degenerate distribution of 0.
      * @param p Probability of moving towards finish
      * @param cap Maximum steps before giving up
      * @param trace Variable to track progress
      * @returns {Array} Random variates array
      *
-     * The FML distribution is a is based on the number of steps taken to return to the orgin
+     * The FML distribution is a is based on the number of steps taken to return to the origin
      * from a given position, with transition probabilities set at the beginning by picking a
      * random variate from U(0,1).
      */
     rfml: function (n, loc, p, cap, trace) {
         n = this._v(n, "n");
-        if(loc === undefined) loc=1;
+        loc = this._v(loc, "nni", 1);
         if(p === undefined) p=this.prng;
-        if(cap === undefined) cap=10000;
+        cap = this._v(cap, "n", 10000);
         if(trace === undefined) trace={};
 
         var toReturn = [];
@@ -650,21 +644,27 @@ module.exports = {
             var x = 0;
             var s = loc;
             var currP = p();
-            do {
+            if(loc === 0) {
 
-                var trial = this.prng();
-                if(trial < currP) {
-                    s++;
-                    trace[String(i) + "_" + String(x)] = { problems: s, p: currP, result: "One more problem" }
-                } else {
-                    s--;
-                    trace[String(i) + "_" + String(x)] = { problems: s, p: currP, result: "One fewer problem" }
-                }
-                x++
-            } while(s > 0 && x < cap);
+                toReturn[i] = 0;
+            } else {
 
-            if(x === cap) x = -1; // Indicate we failed to do it in time.
-            toReturn[i] = x
+                do {
+
+                    var trial = this.prng();
+                    if(trial < currP) {
+                        s++;
+                        trace[String(i) + "_" + String(x)] = { problems: s, p: currP, result: 1 }
+                    } else {
+                        s--;
+                        trace[String(i) + "_" + String(x)] = { problems: s, p: currP, result: -1 }
+                    }
+                    x++
+                } while(s > 0 && x < cap);
+
+                if(x === cap) x = -1; // Indicate we failed to do it in time.
+                toReturn[i] = x;
+            }
         }
         return toReturn
     },
@@ -682,7 +682,7 @@ module.exports = {
         var toReturn = [];
 
         for(var i=0; i<n; i++) {
-            toReturn[i] = this.rexp(1, this.prng())[0]
+            toReturn[i] = this.rexp(1, this.prng())[0];
         }
 
         return toReturn

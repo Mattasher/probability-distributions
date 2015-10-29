@@ -17,6 +17,7 @@ var crypto = require('crypto');
 // Shortcuts
 var exp = Math.exp;
 var ln = Math.log;
+var PI = Math.PI;
 
 module.exports = {
 
@@ -110,7 +111,7 @@ module.exports = {
 
         var toReturn = [];
         for(var i=0; i<n; i++) {
-            var x = scale * Math.tan(Math.PI * (this.prng()-0.5))+loc;
+            var x = scale * Math.tan(PI * (this.prng()-0.5))+loc;
 
             toReturn[i] = x;
         }
@@ -349,6 +350,31 @@ module.exports = {
 
         return toReturn
 
+    },
+
+    /**
+     *
+     * @param x Where sample the density
+     * @param mean Mean of the distribution
+     * @param sd Standard deviation for the distribution
+     * @returns {Number} The density given the parameter values
+     */
+    dnorm: function(x, mean, sd) {
+        x = this._v(x, "r");
+        mean = this._v(mean, "r", 0);
+        sd = this._v(sd, "nn", 1);
+
+        // Check for degeneracy
+        if(sd === 0) {
+            if(x === mean) return Infinity;
+            return 0
+        }
+
+        var a = sd*(Math.sqrt(2*PI));
+        var b = -(x-mean)*(x-mean);
+        var c = 2*sd*sd;
+
+        return (1/a)*exp(b/c)
     },
 
     /**

@@ -73,6 +73,31 @@ describe("Test of negative binomial distribution", function() {
     });
 });
 
+describe("Test of normal density function", function() {
+
+    // Test to make sure throwing properly
+    it('Throws errors on bad parameters', function() {
+        expect(function() { PD.dnorm() }).to.throw("A required parameter is missing or not a number");
+        expect(function() { PD.dnorm(1,0,-0.5) }).to.throw("Parameter cannot be less than 0");
+        expect(function() { PD.dnorm(1,"this") }).to.throw("A required parameter is missing or not a number");
+    });
+
+    it('Gives the correct informaiton abck', function() {
+        expect(PD.dnorm(0,0,0)).to.equal(Infinity);
+        expect(PD.dnorm(1,1,0)).to.equal(Infinity);
+        expect(PD.dnorm(0,1,0)).to.equal(0);
+        expect(Math.round(10e6*PD.dnorm(0))).to.equal(3989423);
+        expect(Math.round(10e6*PD.dnorm(1))).to.equal(2419707);
+        expect(Math.round(10e6*PD.dnorm(-1))).to.equal(2419707);
+        expect(Math.round(10e6*PD.dnorm(1,1))).to.equal(3989423);
+        expect(Math.round(10e6*PD.dnorm(1,1,1))).to.equal(3989423);
+        expect(Math.round(10e6*PD.dnorm(1,1,2))).to.equal(1994711);
+        expect(Math.round(10e6*PD.dnorm(1,-1,2))).to.equal(1209854);
+        expect(Math.round(10e6*PD.dnorm(3,3,1))).to.equal(3989423);
+    });
+});
+
+
 describe("Test of F-distribution", function() {
     it('Generates non-negative numbers', function() {
         var rn = PD.rf(repeat, 1, 1);

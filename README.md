@@ -7,7 +7,8 @@ Functions for sampling random variables from probability distributions. Uses the
 
 `var PD = require("probability-distributions");`
 
-**For documentation and examples, visit: <a href="http://statisticsblog.com/probability-distributions/">http://statisticsblog.com/probability-distributions/</a>**
+## Documentation and examples
+**See <a href="http://statisticsblog.com/probability-distributions/">http://statisticsblog.com/probability-distributions/</a>**
 
 
 ## Currently supported

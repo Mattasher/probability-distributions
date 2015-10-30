@@ -40,6 +40,9 @@ module.exports = {
         return result
     },
 
+
+
+
     /**
      *
      * @param n The number of random variates to create. Must be a positive integer.
@@ -577,10 +580,9 @@ module.exports = {
 
 
     // Return default if undefined, otherwise validate
-    _v: function(param, type, def) {
-        if(param === undefined)
-            if(def !== undefined)
-                return def;
+    _v: function(param, type, defaultParam) {
+        if(param == null && defaultParam != null)
+            return defaultParam;
 
         switch(type) {
 
@@ -722,3 +724,4 @@ module.exports = {
 // Need pathway to make ready for secure applications (NIST/diehard?)
 // Always return a vector unless number is 1? This could be config option or put "1" at end of fcn to get 1 only
 // Separate out core random variate creation from number to create loop
+// TODO: To test out quality of randomness, stub in specific values for this.prng and make sure correct stuff is returned.

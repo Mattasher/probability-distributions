@@ -82,7 +82,7 @@ describe("Test of normal density function", function() {
         expect(function() { PD.dnorm(1,"this") }).to.throw("A required parameter is missing or not a number");
     });
 
-    it('Gives the correct informaiton abck', function() {
+    it('Gives the correct information', function() {
         expect(PD.dnorm(0,0,0)).to.equal(Infinity);
         expect(PD.dnorm(1,1,0)).to.equal(Infinity);
         expect(PD.dnorm(0,1,0)).to.equal(0);

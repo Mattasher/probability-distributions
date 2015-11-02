@@ -18,6 +18,7 @@ var crypto = require('crypto');
 var exp = Math.exp;
 var ln = Math.log;
 var PI = Math.PI;
+var pow = Math.pow;
 
 module.exports = {
 
@@ -357,7 +358,7 @@ module.exports = {
 
     /**
      *
-     * @param x Where sample the density
+     * @param x Where to sample the density
      * @param mean Mean of the distribution
      * @param sd Standard deviation for the distribution
      * @returns {Number} The density given the parameter values
@@ -379,6 +380,7 @@ module.exports = {
 
         return (1/a)*exp(b/c)
     },
+
 
     /**
      *
@@ -414,6 +416,31 @@ module.exports = {
 
         return toReturn
     },
+
+
+    /**
+     *
+     * @param x Where to sample the density
+     * @param lambda Mean/variance
+     * @returns {Number} The density given the parameter values
+     */
+    dpois: function(x, lambda) {
+        x = this._v(x, "nni");
+        lambda = this._v(lambda, "nn");
+
+        // Check for degeneracy
+        if(lambda === 0) {
+            if(x === 0) return 1;
+            return 0
+        }
+
+        var a = pow(lambda, x);
+        var b = exp(-lambda);
+        var c = this._factorial(x);
+
+        return a*b/c
+    },
+
 
     /**
      *
@@ -578,6 +605,13 @@ module.exports = {
         return cur;
     },
 
+    _factorial: function(n) {
+        var toReturn=1;
+        for (var i = 2; i <= n; i++)
+            toReturn = toReturn * i;
+
+        return toReturn;
+    },
 
     // Return default if undefined, otherwise validate
     _v: function(param, type, defaultParam) {

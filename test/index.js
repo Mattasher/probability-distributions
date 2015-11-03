@@ -98,6 +98,23 @@ describe("Test of normal density function", function() {
 });
 
 
+describe("Test of uniform density function", function() {
+
+    // Test to make sure throwing properly
+    it('Throws errors on bad parameters', function() {
+        expect(function() { PD.dunif() }).to.throw("A required parameter is missing or not a number");
+        expect(function() { PD.dunif(1,-1,-1.1) }).to.throw("Minimum value cannot be greater than maximum value");
+    });
+
+    it('Gives the correct information', function() {
+        expect(PD.dunif(0,0,0)).to.equal(Infinity);
+        expect(PD.dunif(1)).to.equal(1);
+        expect(PD.dunif(3.1,-3,3)).to.equal(0);
+        expect(PD.dunif(0.5,0.5,2.5)).to.equal(0.5);
+    });
+});
+
+
 describe("Test of F-distribution", function() {
     it('Generates non-negative numbers', function() {
         var rn = PD.rf(repeat, 1, 1);

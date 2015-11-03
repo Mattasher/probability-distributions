@@ -487,6 +487,20 @@ module.exports = {
         return toReturn
     },
 
+    dunif: function(x, min, max) {
+        x = this._v(x, "r");
+        min = this._v(min, "r", 0);
+        max = this._v(max, "r", 1);
+        if(min > max) throw "Minimum value cannot be greater than maximum value";
+
+        if(x < min || x > max) return 0;
+        if(min === max) return Infinity;
+
+
+        return 1/(max-min);
+    },
+
+
     /**
      *
      * @param n  Number of variates to return

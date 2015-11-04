@@ -51,6 +51,29 @@ describe("Test of binomial distribution", function() {
     });
 });
 
+describe("Test of exponential density function", function() {
+
+    // Test to make sure throwing properly
+    it('Throws errors on bad parameters', function() {
+        expect(function() { PD.dexp() }).to.throw("A required parameter is missing or not a number");
+        expect(function() { PD.dexp(0,0) }).to.throw("Parameter must be greater than 0");
+        expect(function() { PD.dexp(0,-1) }).to.throw("Parameter must be greater than 0");
+        expect(function() { PD.dexp("1") }).to.throw("A required parameter is missing or not a number");
+        expect(function() { PD.dexp("1") }).to.throw("A required parameter is missing or not a number");
+    });
+
+    it('Gives the correct information', function() {
+        expect(PD.dexp(0)).to.equal(1);
+        expect(PD.dexp(0,1)).to.equal(1);
+        expect(PD.dexp(0,.2)).to.equal(.2);
+        expect(PD.dexp(0,2.2)).to.equal(2.2);
+        expect(PD.dexp(-1,2.2)).to.equal(0);
+        expect(Math.round(10e6*PD.dexp(2,2))).to.equal(366313);
+        expect(Math.round(10e6*PD.dexp(1,5.5))).to.equal(224772);
+        expect(Math.round(10e6*PD.dexp(3.2,.3))).to.equal(1148679);
+    });
+});
+
 describe("Test of negative binomial distribution", function() {
     it('Generates whole numbers', function() {
         var rn = PD.rnbinom(repeat, 6, 0.7);

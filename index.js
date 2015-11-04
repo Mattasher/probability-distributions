@@ -149,6 +149,20 @@ module.exports = {
 
     /**
      *
+     * @param x Where to sample the density
+     * @param rate The rate parameter. Must be a positive number
+     * @returns {Number} The density given the parameter values
+     */
+    dexp: function(x, rate) {
+        x = this._v(x, "r");
+        rate = this._v(rate, "pos", 1);
+        if(x < 0) return 0
+
+        return rate * exp(-rate * x)
+    },
+
+    /**
+     *
      * @param n The number of random variates to create. Must be a positive integer.
      * @param rate The rate parameter. Must be a positive number
      */

@@ -74,6 +74,35 @@ describe("Test of exponential density function", function() {
     });
 });
 
+describe("Test of random integer function", function() {
+
+    // Test to make sure throwing properly
+    it('Throws errors on bad parameters', function() {
+        expect(function() { PD.rint() }).to.throw("You must specify how many values you want");
+        expect(function() { PD.rint(0,1,2) }).to.throw("The number of values must be a whole number of 1 or greater");
+        expect(function() { PD.rint(1,1,1,false) }).to.throw("Minimum value cannot be greater than maximum value. For non-inclusive, minimum and maximum must be separated by at least 2.");
+        expect(function() { PD.rint(1,1,2,false) }).to.throw("Minimum value cannot be greater than maximum value. For non-inclusive, minimum and maximum must be separated by at least 2.");
+        expect(function() { PD.rint(1,1,2.1,false) }).to.throw("Parameter must be a whole number");
+        expect(function() { PD.rint(1,1,-1) }).to.throw("Minimum value cannot be greater than maximum value. For non-inclusive, minimum and maximum must be separated by at least 2.");
+    });
+
+    it('Gives the correct information', function() {
+        expect(PD.rint(1,0,0)[0]).to.equal(0);
+        expect(PD.rint(2,1,3,false)[0]).to.equal(2);
+        var rn = PD.rint(repeat, -1, 2);
+        rn.map(function(item) {
+            expect(item).to.be.above(-2);
+            expect(item).to.be.below(3);
+        })
+        var rn = PD.rint(repeat, -1, 2, false);
+        rn.map(function(item) {
+            expect(item).to.be.above(-1);
+            expect(item).to.be.below(2);
+        })
+    });
+});
+
+
 describe("Test of negative binomial distribution", function() {
     it('Generates whole numbers', function() {
         var rn = PD.rnbinom(repeat, 6, 0.7);

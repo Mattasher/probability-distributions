@@ -283,6 +283,37 @@ module.exports = {
 
     },
 
+
+    /**
+     *
+     * @param n The number of random variates to create. Must be a positive integer
+     * @param min Minimum value
+     * @param max Maximum value
+     * @param inclusive By default the minimum and maximum are inclusive. To make exclusive, set to false
+     * @returns {Array}
+     */
+    rint: function(n, min, max, inclusive) {
+        n = this._v(n, "n");
+        min = this._v(min, "int");
+        max = this._v(max, "int");
+        if(inclusive === false) {
+            min++;
+            max--;
+        }
+
+        if(min > max) throw "Minimum value cannot be greater than maximum value. For non-inclusive, minimum and maximum must be separated by at least 2.";
+
+        var toReturn = [];
+
+        var raw = this.runif(n, min, max);
+
+        for(var i=0; i<n; i++) {
+            toReturn[i] = Math.round(raw[i]);
+        }
+
+        return toReturn
+    },
+
     // Syntax as in R library VGAM
     /**
      *
@@ -651,6 +682,13 @@ module.exports = {
             // Array of 1 item or more
             case "a":
                 if(!Array.isArray(param) || !param.length) throw "Expected an array of length 1 or greater";
+                return param;
+
+            // Integer
+            case "int":
+                if(param !== Number(param)) throw "A required parameter is missing or not a number";
+                if(param !== Math.round(param)) throw "Parameter must be a whole number";
+                if(param === Infinity) throw 'Sent "infinity" as a parameter';
                 return param;
 
             // Natural number

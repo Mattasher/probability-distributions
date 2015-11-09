@@ -24,7 +24,9 @@
     "Rstats",
     "Rlang",
     "R-stats",
-    "prng"
+    "prng",
+    "Uniform distribution",
+    "Sampling"
   ],
   "author": "Matt Asher",
   "license": "MIT",

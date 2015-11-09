@@ -41,6 +41,8 @@ Functions for sampling random variables from probability distributions. Uses the
 
 - Uniform distribution (with entropy option for standard uniform)
 
+- Uniform limited to whole numbers
+
 
 ## Warning
 

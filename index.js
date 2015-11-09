@@ -298,7 +298,9 @@ module.exports = {
         max = this._v(max, "int");
         if(inclusive === false) {
             min++;
-            max--;
+            if(min === max) throw "Minimum value cannot be greater than maximum value. For non-inclusive, minimum and maximum must be separated by at least 2.";
+        } else {
+            max++
         }
 
         if(min > max) throw "Minimum value cannot be greater than maximum value. For non-inclusive, minimum and maximum must be separated by at least 2.";
@@ -308,7 +310,7 @@ module.exports = {
         var raw = this.runif(n, min, max);
 
         for(var i=0; i<n; i++) {
-            toReturn[i] = Math.round(raw[i]);
+            toReturn[i] = Math.floor(raw[i]);
         }
 
         return toReturn

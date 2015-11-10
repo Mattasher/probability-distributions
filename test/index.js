@@ -167,6 +167,24 @@ describe("Test of uniform density function", function() {
 });
 
 
+
+describe("Test of random word function", function() {
+
+    // Test to make sure throwing properly
+    it('Throws errors on bad parameters', function() {
+        expect(function() { PD.rword() }).to.throw("You must specify how many values you want");
+        expect(function() { PD.rword(12, "") }).to.throw("Parameter must be at least one character long");
+        expect(function() { PD.rword(12, 12) }).to.throw("A required parameter is missing or not a string");
+        expect(function() { PD.rword(12, Infinity) }).to.throw("A required parameter is missing or not a string");
+    });
+
+    it('Gives the correct information', function() {
+        expect(PD.rword(12,"a")).to.equal("aaaaaaaaaaaa");
+        expect(PD.rword(5).length).to.equal(5);
+    });
+});
+
+
 describe("Test of F-distribution", function() {
     it('Generates non-negative numbers', function() {
         var rn = PD.rf(repeat, 1, 1);

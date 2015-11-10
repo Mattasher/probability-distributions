@@ -571,6 +571,22 @@ module.exports = {
         return toReturn
     },
 
+    /**
+     * Generate a random word of specified length using library
+     * @param len Number of letters in this word
+     * @param {string} Alphabet to use,
+     * @returns {string}
+     */
+    rword: function(len, alphabet) {
+        len = this._v(len, "n");
+        alphabet = this._v(alphabet, "str", "abcdefghijklmnopqrstuvwxyz");
+
+        var lib = alphabet.split("");
+        var arr = this.sample(lib, len, true);
+
+        return arr.join("");
+    },
+
 
     /**
      *
@@ -736,6 +752,13 @@ module.exports = {
                 if(param < 0) throw "Parameter cannot be less than zero";
                 if(param === Infinity) throw 'Sent "infinity" as a parameter';
                 return param;
+
+            // Non-empty string
+            case "str":
+                if(param !== String(param)) throw "A required parameter is missing or not a string";
+                if(param.length === 0) throw "Parameter must be at least one character long";
+                return param;
+
 
         }
     },

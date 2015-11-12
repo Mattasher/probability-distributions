@@ -43,6 +43,8 @@ Functions for sampling random variables from probability distributions. Uses the
 
 - Uniform limited to whole numbers
 
+- Words (generate random words from a library of characters)
+
 
 ## Warning
 

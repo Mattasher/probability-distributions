@@ -572,10 +572,10 @@ module.exports = {
     },
 
     /**
-     * Generate a random word of specified length using library
+     * Generate a random word of specified length using library of characters. Uses English alphabet if no library is specified
      * @param len Number of letters in this word
-     * @param {string} Alphabet to use,
-     * @returns {string}
+     * @param {string} alphabet to use
+     * @returns {string} String of randomly selected characters from the alphabet
      */
     rword: function(len, alphabet) {
         len = this._v(len, "n");

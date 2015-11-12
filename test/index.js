@@ -181,6 +181,7 @@ describe("Test of random word function", function() {
     it('Gives the correct information', function() {
         expect(PD.rword(12,"a")).to.equal("aaaaaaaaaaaa");
         expect(PD.rword(5).length).to.equal(5);
+        expect(PD.rword(50, "HT")).to.match(/^[HT]*$/);
     });
 });
 

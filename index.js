@@ -534,6 +534,14 @@ module.exports = {
         return toReturn
     },
 
+    /**
+     * Density function for uniform distribution
+     *
+     * @param x Location to get density for
+     * @param min {number} Minimum value
+     * @param max {number} Maximum value
+     * @returns {number} Density of the function given the location and parameters
+     */
     dunif: function(x, min, max) {
         x = this._v(x, "r");
         min = this._v(min, "r", 0);

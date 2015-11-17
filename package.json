@@ -1,6 +1,6 @@
 {
   "name": "probability-distributions",
-  "version": "0.8.4",
+  "version": "0.8.5",
   "description": "Generate random variables from a variety of probability distributions. Includes tools to shuffle an array or sample from it.",
   "main": "index.js",
   "scripts": {

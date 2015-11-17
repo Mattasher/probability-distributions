@@ -218,6 +218,12 @@ describe("Test of sample function", function() {
         expect(PD.sample([3],1)[0]).to.equal(3);
         expect(PD.sample([3],1)[1]).to.equal(undefined);
 
+        // Make sure arrays aren't messed with
+        var things = [1,2,3,4];
+        PD.sample(things, 2);
+        expect(things.length).to.equal(4);
+
+
         for(var i=0; i<repeat; i++) {
             expect(PD.sample([1,2,3,4], 1, true, [0,0,0,0.3])[0]).to.equal(4);
         }

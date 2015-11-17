@@ -699,6 +699,7 @@ module.exports = {
     },
 
     // Return default if undefined, otherwise validate
+    // Return a COPY of the validated parameter
     _v: function(param, type, defaultParam) {
         if(param == null && defaultParam != null)
             return defaultParam;
@@ -708,7 +709,7 @@ module.exports = {
             // Array of 1 item or more
             case "a":
                 if(!Array.isArray(param) || !param.length) throw "Expected an array of length 1 or greater";
-                return param;
+                return param.slice(0);
 
             // Integer
             case "int":

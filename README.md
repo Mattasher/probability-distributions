@@ -45,6 +45,8 @@ Functions for sampling random variables from probability distributions. Uses the
 
 - Words (generate random words from a library of characters)
 
+- Visualization (show the values of a random variable in an animated loop)
+
 
 ## Warning
 

@@ -647,6 +647,116 @@ module.exports = {
     },
 
 
+    /**
+     *
+     * @param data Array of data to display
+     * @param domID String ID of the DOM element to use for display. This must ALREADY exist on your page
+     * @param options Object see below for details
+     *
+     * IMPORTANT: This is not a "pure" function, it takes a DOM element ID as an argument and modifies (completely overwrites)
+     * that element.
+     *
+     * IMPORTANT 2: options.conditions are eval'd so don't send untrusted code sent to this function!
+     *
+     */
+    visualize: function(data, domID, options) {
+        var defaultOptions = {
+            lag: 1000, // Timing multiplier in milliseconds
+            blank: "", // What to show when no number is shown
+            inf: "&infin;", // Symbol to indicate infinity
+            loop: true, // When done, start again at beginning at end of array
+            conditions: "", // This is eval'd and checked against true. Example, "x > 3 && x < 10". Use "x" as the variable.
+            arrivalTimes: false,
+            arrivalSymbol: '<span class="pd-arrival">&#8226;</span>',
+            arrivalFlashTime: 0.25,
+            significantDigits: 0 // 0 will show as many as JS provides, or choose a number to limit
+        }
+
+        if(typeof options === "undefined") options = {}
+
+        // Merge defaultOptions with user options favoring user options
+        for (var property in defaultOptions) {
+            if (defaultOptions.hasOwnProperty(property)) {
+                if(typeof options[property] === "undefined") {
+                    options[property] = defaultOptions[property];
+                }
+            }
+        }
+
+        // Elem is a DOM element to output to
+        var elem = document.getElementById(domID);
+        if(!elem) throw "Unable to find DOM element " + domID;
+
+        var len = data.length, i = 0;
+
+        var format = function(x) {
+            var x = data[i];
+
+            // Are we showing only certain things
+            if(options.conditions) {
+
+                // Check for only allowed characters, this is NOT complete security
+                if(!/^[x\&\|=0-9\<\>\s\-\.]+$/.test(options.conditions)) throw "Bad input sent to options.conditions"
+
+                if (eval(options.conditions) !== true) {
+                    x = options.blank;
+                    return x
+                }
+            }
+
+            if(options.significantDigits) {
+                x = x.toPrecision(options.significantDigits)
+            }
+
+            if(x === Infinity) {
+                x = options.inf;
+            }
+            return x;
+        }
+
+
+        if(options.arrivalTimes) {
+            var blankOut = function() {
+                setTimeout(function() {
+                    elem.innerHTML = options.blank;
+                }, options.arrivalFlashTime*options.lag);
+            }
+
+            var cycle = function() {
+
+                elem.innerHTML = options.arrivalSymbol;
+                blankOut();
+                if(++i === len) i = 0;
+
+                if(options.loop || i !== 0) {
+                    setTimeout(cycle, data[i]*options.lag)
+                } else {
+                    // End on a blank
+                    elem.innerHTML = options.blank;
+                }
+            }
+            cycle();
+
+        } else {
+            var update = function() {
+                // Main vis for non-arrival numbers
+
+                elem.innerHTML = format(data[i]);
+                if(++i === len) i = 0;
+
+                if(options.loop || i !== 0) {
+                    setTimeout(update, options.lag)
+                } else {
+                    // End on a blank
+                    setTimeout(function() { elem.innerHTML = options.blank }, options.lag)
+
+                }
+            }
+            update();
+        }
+    },
+
+
     // HELPERS
 
     /**
@@ -771,6 +881,8 @@ module.exports = {
 
         }
     },
+
+
 
 
     //    ________   _______  ______ _____  _____ __  __ ______ _   _ _______       _

@@ -298,12 +298,12 @@ module.exports = {
         max = this._v(max, "int");
         if(inclusive === false) {
             min++;
-            if(min === max) throw "Minimum value cannot be greater than maximum value. For non-inclusive, minimum and maximum must be separated by at least 2.";
+            if(min === max) throw new Error("Minimum value cannot be greater than maximum value. For non-inclusive, minimum and maximum must be separated by at least 2.");
         } else {
             max++
         }
 
-        if(min > max) throw "Minimum value cannot be greater than maximum value. For non-inclusive, minimum and maximum must be separated by at least 2.";
+        if(min > max) throw new Error("Minimum value cannot be greater than maximum value. For non-inclusive, minimum and maximum must be separated by at least 2.");
 
         var toReturn = [];
 
@@ -377,9 +377,9 @@ module.exports = {
     rnbinom: function(n, size, p, mu) {
         n = this._v(n, "n");
         if(size === undefined) size=1;
-        if(Math.round(size) != size) throw "Size must be a whole number";
-        if(size < 1) throw "Size must be one or greater";
-        if(p !== undefined && mu !== undefined) throw "You must specify probability or mean, not both";
+        if(Math.round(size) != size) throw new Error("Size must be a whole number");
+        if(size < 1) throw new Error("Size must be one or greater");
+        if(p !== undefined && mu !== undefined) throw new Error("You must specify probability or mean, not both");
         if(mu !== undefined) p = size/(size+mu);
         p = this._v(p, "p");
 
@@ -546,7 +546,7 @@ module.exports = {
         x = this._v(x, "r");
         min = this._v(min, "r", 0);
         max = this._v(max, "r", 1);
-        if(min > max) throw "Minimum value cannot be greater than maximum value";
+        if(min > max) throw new Error("Minimum value cannot be greater than maximum value");
 
         if(x < min || x > max) return 0;
         if(min === max) return Infinity;
@@ -567,7 +567,7 @@ module.exports = {
         n = this._v(n, "n");
         min = this._v(min, "r", 0);
         max = this._v(max, "r", 1);
-        if(min > max) throw "Minimum value cannot be greater than maximum value";
+        if(min > max) throw new Error("Minimum value cannot be greater than maximum value");
 
         var toReturn = [];
 
@@ -611,7 +611,7 @@ module.exports = {
         n = this._v(n, "n", collection.length); // If n is undefined, sample the full array
         if(replace === undefined) replace = false;
         if(!replace && collection.length < n)
-            throw "You cannot select " + n + " items from an array of length " + collection.length + " without replacement";
+            throw new Error("You cannot select " + n + " items from an array of length " + collection.length + " without replacement");
 
         if(ratios === undefined) {
             ratios = [];
@@ -685,7 +685,7 @@ module.exports = {
 
         // Elem is a DOM element to output to
         var elem = document.getElementById(domID);
-        if(!elem) throw "Unable to find DOM element " + domID;
+        if(!elem) throw new Error("Unable to find DOM element " + domID);
 
         var len = data.length, i = 0;
 
@@ -696,7 +696,7 @@ module.exports = {
             if(options.conditions) {
 
                 // Check for only allowed characters, this is NOT complete security
-                if(!/^[x\&\|=0-9\<\>\s\-\.]+$/.test(options.conditions)) throw "Bad input sent to options.conditions"
+                if(!/^[x\&\|=0-9\<\>\s\-\.]+$/.test(options.conditions)) throw new Error("Bad input sent to options.conditions");
 
                 if (eval(options.conditions) !== true) {
                     x = options.blank;
@@ -767,14 +767,14 @@ module.exports = {
      * @private
      */
     _getCumulativeProbs: function(ratios, len) {
-        if(len === undefined) throw "An error occurred: len was not sent to _getCumulativeProbs";
-        if(ratios.length !== len) throw "Probabilities for sample must be same length as the array to sample from";
+        if(len === undefined) throw new Error("An error occurred: len was not sent to _getCumulativeProbs");
+        if(ratios.length !== len) throw new Error("Probabilities for sample must be same length as the array to sample from");
 
         var toReturn = [];
 
         if(ratios !== undefined) {
             ratios = this._v(ratios, "a");
-            if(ratios.length !== len) throw "Probabilities array must be the same length as the array you are sampling from";
+            if(ratios.length !== len) throw new Error("Probabilities array must be the same length as the array you are sampling from");
 
             var sum = 0;
             ratios.map(function(ratio) {
@@ -818,64 +818,64 @@ module.exports = {
 
             // Array of 1 item or more
             case "a":
-                if(!Array.isArray(param) || !param.length) throw "Expected an array of length 1 or greater";
+                if(!Array.isArray(param) || !param.length) throw new Error("Expected an array of length 1 or greater");
                 return param.slice(0);
 
             // Integer
             case "int":
-                if(param !== Number(param)) throw "A required parameter is missing or not a number";
-                if(param !== Math.round(param)) throw "Parameter must be a whole number";
-                if(param === Infinity) throw 'Sent "infinity" as a parameter';
+                if(param !== Number(param)) throw new Error("A required parameter is missing or not a number");
+                if(param !== Math.round(param)) throw new Error("Parameter must be a whole number");
+                if(param === Infinity) throw new Error("Sent 'infinity' as a parameter");
                 return param;
 
             // Natural number
             case "n":
-                if(param === undefined) throw "You must specify how many values you want";
-                if(param !== Number(param)) throw "The number of values must be numeric";
-                if(param !== Math.round(param)) throw "The number of values must be a whole number";
-                if(param < 1) throw "The number of values must be a whole number of 1 or greater";
-                if(param === Infinity) throw "The number of values cannot be infinite ;-)";
+                if(param === undefined) throw new Error("You must specify how many values you want");
+                if(param !== Number(param)) throw new Error("The number of values must be numeric");
+                if(param !== Math.round(param)) throw new Error("The number of values must be a whole number");
+                if(param < 1) throw new Error("The number of values must be a whole number of 1 or greater");
+                if(param === Infinity) throw new Error("The number of values cannot be infinite ;-)");
                 return param;
 
             // Valid probability
             case "p":
-                if(Number(param) !== param) throw "Probability value is missing or not a number";
-                if(param > 1) throw "Probability values cannot be greater than 1";
-                if(param < 0) throw "Probability values cannot be less than 0";
+                if(Number(param) !== param) throw new Error("Probability value is missing or not a number");
+                if(param > 1) throw new Error("Probability values cannot be greater than 1");
+                if(param < 0) throw new Error("Probability values cannot be less than 0");
                 return param;
 
             // Positive numbers
             case "pos":
-                if(Number(param) !== param) throw "A required parameter is missing or not a number";
-                if(param <= 0) throw "Parameter must be greater than 0";
-                if(param === Infinity) throw 'Sent "infinity" as a parameter';
+                if(Number(param) !== param) throw new Error("A required parameter is missing or not a number");
+                if(param <= 0) throw new Error("Parameter must be greater than 0");
+                if(param === Infinity) throw new Error("Sent 'infinity' as a parameter");
                 return param;
 
             // Look for numbers (reals)
             case "r":
-                if(Number(param) !== param) throw "A required parameter is missing or not a number";
-                if(param === Infinity) throw 'Sent "infinity" as a parameter';
+                if(Number(param) !== param) throw new Error("A required parameter is missing or not a number");
+                if(param === Infinity) throw new Error("Sent 'infinity' as a parameter");
                 return param;
 
             // Non negative real number
             case "nn":
-                if(param !== Number(param)) throw "A required parameter is missing or not a number";
-                if(param < 0) throw "Parameter cannot be less than 0";
-                if(param === Infinity) throw 'Sent "infinity" as a parameter';
+                if(param !== Number(param)) throw new Error("A required parameter is missing or not a number");
+                if(param < 0) throw new Error("Parameter cannot be less than 0");
+                if(param === Infinity) throw new Error("Sent 'infinity' as a parameter");
                 return param;
 
             // Non negative whole number (integer)
             case "nni":
-                if(param !== Number(param)) throw "A required parameter is missing or not a number";
-                if(param !== Math.round(param)) throw "Parameter must be a whole number";
-                if(param < 0) throw "Parameter cannot be less than zero";
-                if(param === Infinity) throw 'Sent "infinity" as a parameter';
+                if(param !== Number(param)) throw new Error("A required parameter is missing or not a number");
+                if(param !== Math.round(param)) throw new Error("Parameter must be a whole number");
+                if(param < 0) throw new Error("Parameter cannot be less than zero");
+                if(param === Infinity) throw new Error("Sent 'infinity' as a parameter");
                 return param;
 
             // Non-empty string
             case "str":
-                if(param !== String(param)) throw "A required parameter is missing or not a string";
-                if(param.length === 0) throw "Parameter must be at least one character long";
+                if(param !== String(param)) throw new Error("A required parameter is missing or not a string");
+                if(param.length === 0) throw new Error("Parameter must be at least one character long");
                 return param;
 
 

@@ -261,22 +261,22 @@ describe("Test validation functions", function() {
         expect(function() { PD._v(-0.1, "pos") }).to.throw("Parameter must be greater than 0");
         expect(function() { PD._v(-10e6, "pos") }).to.throw("Parameter must be greater than 0");
         expect(function() { PD._v(0, "pos") }).to.throw("Parameter must be greater than 0");
-        expect(function() { PD._v(1/0, "pos") }).to.throw('Sent "infinity" as a parameter');
+        expect(function() { PD._v(1/0, "pos") }).to.throw("Sent 'infinity' as a parameter");
 
         // "r"
         expect(function() { PD._v(undefined, "r") }).to.throw("A required parameter is missing or not a number");
-        expect(function() { PD._v(1/0, "r") }).to.throw('Sent "infinity" as a parameter');
+        expect(function() { PD._v(1/0, "r") }).to.throw("Sent 'infinity' as a parameter");
 
         // "nn"
         expect(function() { PD._v(undefined, "nn") }).to.throw("A required parameter is missing or not a number");
         expect(function() { PD._v(-0.2, "nn") }).to.throw("Parameter cannot be less than 0");
-        expect(function() { PD._v(1/0, "nn") }).to.throw('Sent "infinity" as a parameter');
+        expect(function() { PD._v(1/0, "nn") }).to.throw("Sent 'infinity' as a parameter");
 
         // "nni"
         expect(function() { PD._v(undefined, "nni") }).to.throw("A required parameter is missing or not a number");
         expect(function() { PD._v(23.4, "nni") }).to.throw("Parameter must be a whole number");
         expect(function() { PD._v(-0.2, "nni") }).to.throw("Parameter must be a whole number");
-        expect(function() { PD._v(1/0, "nni") }).to.throw('Sent "infinity" as a parameter');
+        expect(function() { PD._v(1/0, "nni") }).to.throw("Sent 'infinity' as a parameter");
 
     });
 

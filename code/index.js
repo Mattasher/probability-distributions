@@ -655,8 +655,6 @@ export function sample(collection, n, replace, ratios) {
  * IMPORTANT: This is not a "pure" function, it takes a DOM element ID as an argument and modifies (completely overwrites)
  * that element.
  *
- * IMPORTANT 2: options.conditions are eval'd so don't send untrusted code sent to this function!
- *
  */
 export function visualize(data, domID, options) {
     var defaultOptions = {
@@ -664,7 +662,7 @@ export function visualize(data, domID, options) {
         blank: "", // What to show when no number is shown
         inf: "&infin;", // Symbol to indicate infinity
         loop: true, // When done, start again at beginning at end of array
-        conditions: "", // This is eval'd and checked against true. Example, "x > 3 && x < 10". Use "x" as the variable.
+        conditions: null, // this optional filter function is passed "x" and should return `true` to show the value
         arrivalTimes: false,
         arrivalSymbol: '<span class="pd-arrival">&#8226;</span>',
         arrivalFlashTime: 0.25,
@@ -693,11 +691,7 @@ export function visualize(data, domID, options) {
 
         // Are we showing only certain things
         if(options.conditions) {
-
-            // Check for only allowed characters, this is NOT complete security
-            if(!/^[x\&\|=0-9\<\>\s\-\.]+$/.test(options.conditions)) throw new Error("Bad input sent to options.conditions");
-
-            if (eval(options.conditions) !== true) {
+            if (options.conditions(x) !== true) {
                 x = options.blank;
                 return x
             }

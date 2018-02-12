@@ -1,6 +1,6 @@
 var chai = require('chai');
 var expect = chai.expect;
-var PD = require("../index")
+var PD = require("../dist/index")
 
 // CONFIG
 var repeat = 1000; // How many times to repeat some tests
